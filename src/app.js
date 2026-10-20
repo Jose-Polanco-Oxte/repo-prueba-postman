@@ -20,6 +20,8 @@ import {
   security,
 } from "./schemas.js";
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const DEMO_ID = "00000000-0000-4000-8000-000000000001";
 const hashPassword = (password) => {
   const salt = randomBytes(16).toString("hex");
@@ -193,7 +195,10 @@ export async function buildApp(options = {}) {
         },
       },
     },
-    async () => ({ status: "ok" }),
+    async () => {
+      await sleep(500);
+      return { status: "ok" };
+    },
   );
 
   app.post(
