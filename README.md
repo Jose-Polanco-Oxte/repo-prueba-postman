@@ -22,6 +22,33 @@ No requiere base de datos ni servicios externos. Los datos y los tokens OAuth vi
 
 Opcionalmente copia `.env.example` a `.env` para cambiar host, puerto, secreto JWT o credenciales OAuth. `npm start` carga ese archivo automáticamente; `npm run dev` reinicia al editar código. El servidor escucha en `127.0.0.1` por defecto.
 
+## Ejecutar con Docker
+
+Necesitas Docker con Docker Compose. Desde esta carpeta:
+
+```sh
+docker compose up --build -d
+```
+
+- API: http://localhost:3000
+- Swagger UI: http://localhost:3000/docs/
+- Estado del contenedor: `docker compose ps` (incluye el chequeo de `/health`).
+- Logs: `docker compose logs -f api`.
+- Detener y eliminar el contenedor: `docker compose down`.
+
+Compose funciona sin crear un archivo `.env`. Si existe, usa `PORT` para el puerto de tu equipo y `JWT_SECRET`, `OAUTH_CLIENT_ID` y `OAUTH_CLIENT_SECRET` para la autenticación. Por ejemplo, con `PORT=3001` la API queda en http://localhost:3001; ajusta también `baseUrl` o `servers` al importar OpenAPI. Dentro del contenedor el servidor siempre escucha en `0.0.0.0:3000`; el valor local de `HOST` no lo modifica. El puerto se publica en `127.0.0.1` de tu equipo.
+
+La imagen instala las dependencias de producción con `npm ci` y el lockfile, ejecuta Node directamente como usuario sin privilegios y comprueba `/health`. El contexto de construcción solo incluye los manifiestos npm y `src/`, por lo que `.env` y las dependencias locales quedan fuera de la imagen. No se necesitan volúmenes: los datos siguen en memoria y se pierden al reiniciar el contenedor.
+
+También puedes ejecutar la imagen sin Compose:
+
+```sh
+docker build -t users-api-demo .
+docker run --rm --name users-api-demo -p 127.0.0.1:3000:3000 users-api-demo
+```
+
+En ese caso, pasa la configuración con `-e JWT_SECRET=...` u otras variables `-e`. Si usas `--env-file .env`, agrega `-e HOST=0.0.0.0 -e PORT=3000` para mantener la escucha interna del contenedor.
+
 ## Credenciales de demostración
 
 | Uso | Identificador | Contraseña / secreto |

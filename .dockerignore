@@ -1,0 +1,6 @@
+# Solo incluir lo necesario para instalar y ejecutar la API.
+**
+!package.json
+!package-lock.json
+!src/
+!src/**

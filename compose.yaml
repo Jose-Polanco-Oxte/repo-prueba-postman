@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:${PORT:-3000}:3000"
+    environment:
+      HOST: 0.0.0.0
+      PORT: "3000"
+      JWT_SECRET: ${JWT_SECRET:-demo-only-change-this-secret-at-least-32-characters}
+      OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID:-postman-demo}
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET:-demo-client-secret}
+    restart: unless-stopped
